@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calendar</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <style>
+    #calendar {
+  width: 300px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+}
+
+#calendar h2 {
+  text-align: center;
+}
+
+#calendar table {
+  width: 100%;
+}
+
+#calendar th, #calendar td {
+  text-align: center;
+  padding: 5px;
+}
+
+#calendar th {
+  background-color: #eee;
+}
+
+#calendar td {
+  cursor: pointer;
+}
+
+#calendar .current-day {
+  background-color: #007bff;
+  color: #fff;
+}
+
+  </style>
+</head>
+<body>
+  <h1>Calendar</h1>
+  <div id="calendar"></div>
+
+  <script src="script.js"></script>
+  <script>
+    // Get current date
+const currentDate = new Date();
+
+// Month names
+const monthNames = [
+  "January", "February", "March",
+  "April", "May", "June", "July",
+  "August", "September", "October",
+  "November", "December"
+];
+
+// Render calendar
+function renderCalendar() {
+  // Get reference to calendar element
+  const calendar = document.getElementById("calendar");
+
+  // Clear existing content
+  calendar.innerHTML = "";
+
+  // Create header
+  const header = document.createElement("h2");
+  header.innerHTML = monthNames[currentDate.getMonth()] + " " + currentDate.getFullYear();
+  calendar.appendChild(header);
+
+  // Create table
+  const table = document.createElement("table");
+  calendar.appendChild(table);
+
+  // Create table header (weekdays)
+  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const headerRow = document.createElement("tr");
+  table.appendChild(headerRow);
+
+  weekdays.forEach(weekday => {
+    const th = document.createElement("th");
+    th.innerHTML = weekday;
+    headerRow.appendChild(th);
+  });
+
+  // Calculate days in the current month
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const totalDays = lastDay.getDate();
+
+  // Calculate the position of the first day
+  let startDay = firstDay.getDay();
+  if (startDay === 0) {
+    startDay = 7; // Sunday (0) should be the last column
+  }
+
+  // Create table rows and cells
+  let dayCount = 1;
+  for (let i = 0; i < 6; i++) {
+    const row = document.createElement("tr");
+    table.appendChild(row);
+
+    for (let j = 0; j < 7; j++) {
+      if (i === 0 && j < startDay - 1) {
+        const cell = document.createElement("td");
+        row.appendChild(cell);
+      } else if (dayCount > totalDays) {
+        break;
+      } else {
+        const cell = document.createElement("td");
+        cell.innerHTML = dayCount;
+        row.appendChild(cell);
+
+        // Highlight the current day
+        if (
+          dayCount === currentDate.getDate() &&
+          month === currentDate.getMonth() &&
+          year === currentDate.getFullYear()
+        ) {
+          cell.classList.add("current-day");
+        }
+
+        dayCount++;
+      }
+    }
+  }
+}
+
+// Render calendar on page load
+renderCalendar();
+
+  </script>
+</body>
+</html>
